@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import * as tf from "@tensorflow/tfjs";
 import * as posenet from "@tensorflow-models/posenet";
 import Webcam from "react-webcam";
 
@@ -14,8 +13,8 @@ const CameraView = () => {
         right: 0,
         textAlign: 'center',
         zIndex: 9,
-        width: 1080,
-        height: 720
+        width: 640,
+        height: 480
     }
 
     const runPosenet = async () => {
@@ -24,6 +23,25 @@ const CameraView = () => {
         setInterval(()=>{
             detect(net)
         }, 100)
+    }
+
+    const drawHand = (predictions, canvas) => {
+        console.log(predictions)
+        if(predictions.score > 0){
+            const keypoints = predictions.keypoints;
+            keypoints.forEach((point)=>{
+                const x = point.position.x
+                const y = point.position.y
+                console.log(x)
+                canvas.beginPath();
+                canvas.arc(x, y, 5, 0, 3 * Math.PI);
+
+                canvas.fillStyle = "Indigo";
+                canvas.fill();
+                
+
+            })
+        }
     }
 
     const detect = async (net) => {
@@ -43,7 +61,9 @@ const CameraView = () => {
             canvasRef.current.height = videoHeight;
 
             const pose = await net.estimateSinglePose(video);
-            console.log(pose)
+            //console.log(pose)
+
+            drawHand(pose, canvasRef.current.getContext("2d"))
         }
 
     }
