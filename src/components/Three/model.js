@@ -35,7 +35,8 @@ export default function Model(props) {
     
     nodes.Ch36.skeleton.bones[7].rotation.y = - getAngle(kp[5], kp[7])
     nodes.Ch36.skeleton.bones[31].rotation.y = - getAngle(kp[6], kp[8]) - 3.14
-    nodes.Ch36.skeleton.bones[9].rotation.x = 1.6
+    nodes.Ch36.skeleton.bones[9].rotation.x = getAngle(kp[7], kp[9])
+    nodes.Ch36.skeleton.bones[33].rotation.x = -getAngle(kp[8], kp[10]) - 3.14
     //moveJoint(nodes.Ch36.skeleton.bones[0], coords)
   })
 
