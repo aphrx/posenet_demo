@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import * as tf from "@tensorflow/tfjs";
 import * as posenet from "@tensorflow-models/posenet";
 import Webcam from "react-webcam";
 
-const CameraView = () => {
+const CameraView = (props) => {
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
     const style={
@@ -13,8 +14,8 @@ const CameraView = () => {
         right: 0,
         textAlign: 'center',
         zIndex: 9,
-        width: 640,
-        height: 480
+        width: 320,
+        height: 240
     }
 
     const runPosenet = async () => {
@@ -25,21 +26,18 @@ const CameraView = () => {
         }, 100)
     }
 
-    const drawHand = (predictions, canvas) => {
-        console.log(predictions)
+    const drawPose = (predictions, canvas) => {
         if(predictions.score > 0){
             const keypoints = predictions.keypoints;
+            //console.log(keypoints)
+            props.mapJoints(keypoints)
             keypoints.forEach((point)=>{
                 const x = point.position.x
                 const y = point.position.y
-                console.log(x)
                 canvas.beginPath();
                 canvas.arc(x, y, 5, 0, 3 * Math.PI);
-
                 canvas.fillStyle = "Indigo";
                 canvas.fill();
-                
-
             })
         }
     }
@@ -61,9 +59,7 @@ const CameraView = () => {
             canvasRef.current.height = videoHeight;
 
             const pose = await net.estimateSinglePose(video);
-            //console.log(pose)
-
-            drawHand(pose, canvasRef.current.getContext("2d"))
+            drawPose(pose, canvasRef.current.getContext("2d"))
         }
 
     }
