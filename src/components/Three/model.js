@@ -26,13 +26,14 @@ export default function Model(props) {
 
   useFrame((state, delta) => {
     const coords = {x: 10, y: 10}
+    const limbs = [[7,5,7], [31,8,6], [9,7,9], [33,10,8],[55,13,11]]
     kp = props.getJoints()
   
     nodes.Ch36.skeleton.bones[7].rotation.y = - getAngle(kp[5], kp[7])
     nodes.Ch36.skeleton.bones[31].rotation.y = - getAngle(kp[8], kp[6])
     nodes.Ch36.skeleton.bones[9].rotation.x = getAngle(kp[7], kp[9])
     nodes.Ch36.skeleton.bones[33].rotation.x = -getAngle(kp[10], kp[8])
-    //nodes.Ch36.skeleton.bones[55].rotation.z =  -getAngle(kp[13], kp[11])+ 3.14/2
+    nodes.Ch36.skeleton.bones[55].rotation.z =  -getAngle(kp[13], kp[11])+ 3.14/2
     nodes.Ch36.skeleton.bones[60].rotation.z =  -getAngle(kp[14], kp[12])+ 3.14/2
 
     //moveJoint(nodes.Ch36.skeleton.bones[0], coords)
