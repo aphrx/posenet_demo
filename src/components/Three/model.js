@@ -13,6 +13,19 @@ const getAngle = (p1, p2, c1, c2, m) => {
   return c2 * m
 }
 
+const normalize = (min, max, val) => {
+  return ((val - min) / (max - min))* Math.PI;
+}
+
+const getRotation = (p1, p2, p3) => {
+  if(p1['score'] > 0.3 && p2['score'] > 0.3 && p3['score'] > 0.3){
+    let e1 = Math.abs(p1['position']['x'] - p3['position']['x'])
+    let e2 = Math.abs(p2['position']['x'] - p3['position']['x'])
+    return normalize(-80, 80, e2-e1) - Math.PI/2;
+  }
+  return Math.PI
+}
+
 export default function Model(props) {
   let kp;
   const group = useRef()
@@ -26,7 +39,7 @@ export default function Model(props) {
 
   useFrame((state, delta) => {
     kp = props.getJoints()
-  
+
     // Left arm & elbow
     nodes.Ch36.skeleton.bones[7].rotation.y = getAngle(kp[5], kp[7], 0, 0, -1)
     nodes.Ch36.skeleton.bones[9].rotation.x = getAngle(kp[7], kp[9], 0, 0, 1)
@@ -35,16 +48,16 @@ export default function Model(props) {
     nodes.Ch36.skeleton.bones[31].rotation.y = getAngle(kp[8], kp[6], 0, 0, -1)
     nodes.Ch36.skeleton.bones[33].rotation.x = getAngle(kp[10], kp[8], 0, 0, -1)
     
-    // Left leg & knee
-    nodes.Ch36.skeleton.bones[55].rotation.z =  getAngle(kp[13], kp[11], (3.14/2), 3.14, -1)
-    nodes.Ch36.skeleton.bones[56].rotation.z = getAngle(kp[15], kp[13], (3.14/2), 0, -1)
+    // // Left leg & knee
+    // nodes.Ch36.skeleton.bones[55].rotation.z =  getAngle(kp[13], kp[11], -(Math.PI/2), Math.PI, -1)
+    // nodes.Ch36.skeleton.bones[56].rotation.z = getAngle(kp[15], kp[13], (Math.PI/2), 0, -1)
 
-    // Right leg & knee
-    nodes.Ch36.skeleton.bones[60].rotation.z =  getAngle(kp[14], kp[12], (3.14/2), 3.14, -1)
-    nodes.Ch36.skeleton.bones[61].rotation.z = getAngle(kp[16], kp[14], (3.14/2), 0, -1)
+    // // Right leg & knee
+    // nodes.Ch36.skeleton.bones[60].rotation.z =  getAngle(kp[14], kp[12], -(Math.PI/2), Math.PI, -1)
+    // nodes.Ch36.skeleton.bones[61].rotation.z = getAngle(kp[16], kp[14], (Math.PI/2), 0, -1)
 
-    console.log(-getAngle(kp[13], kp[11], (3.14/2), 3.14))
-    console.log(-getAngle(kp[13], kp[11], 0, 0)+ 3.14/2)
+    nodes.Ch36.skeleton.bones[5].rotation.y = getRotation(kp[1], kp[2], kp[0])
+
   })
 
   return (
